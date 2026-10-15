@@ -1,0 +1,9 @@
+DEFAULT_REPOSITORY = "JpaRepository"
+
+DEFAULT_CONTROLLER = "RestController"
+
+USE_LOMBOK = True
+
+UPDATE_POM = True
+
+CREATE_DOCS = True
