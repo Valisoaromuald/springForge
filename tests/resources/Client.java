@@ -4,8 +4,8 @@ package tests.resources;
 // import java.time.LocalDate;
 
 @Entity
+@Table(name="customer")
 public class Client {
-
     @Id
     private Long id;
 

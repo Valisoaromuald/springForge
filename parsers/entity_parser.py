@@ -62,7 +62,10 @@ class EntityParser:
         ]
         
         self._extract_primary_key(clazz, metadata)
+        self._extract_table_name(clazz,metadata)
         return metadata
+    
+    
     def _extract_primary_key(self, clazz, metadata):
         # -----------------------------
         # Recherche de la clé primaire
@@ -76,3 +79,14 @@ class EntityParser:
             raise ValueError(
             f"Aucune clé primaire (@Id) trouvée dans {metadata.class_name}."
             )
+    
+    def _extract_table_name(self, clazz, metadata):
+        # -----------------------------
+        # Recherche du nom de la table
+        # -----------------------------
+        for annotation in clazz.annotations:
+            if annotation.name == "Table":
+                for element in annotation.element:
+                    if element.name == "name":
+                        metadata.table_name = element.value.value
+                

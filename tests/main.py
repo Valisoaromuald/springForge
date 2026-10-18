@@ -8,6 +8,6 @@ parser = EntityParser(Path("tests/resources"))
 
 entity_path = parser.find_entity("Client")
 
-metadata = parser.parse_entity(entity_path)
+metadata = parser.parse_entity  (entity_path)
 
 print(metadata)

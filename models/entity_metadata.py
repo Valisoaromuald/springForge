@@ -8,3 +8,4 @@ class EntityMetadata:
     imports: list[str] = field(default_factory=list)
     id_name: str = ""
     id_type: str = ""
+    table_name: str = ""
