@@ -54,9 +54,22 @@ class EntityParser:
             raise ValueError(
                 "Aucune classe trouvée."
             )
+        clazz = tree.types[0]
         metadata.class_name = tree.types[0].name
         metadata.imports = [
             imp.path
             for imp in tree.imports
         ]
-        return metadata
+        
+        # -----------------------------
+        # Recherche de la clé primaire
+        # -----------------------------
+        for field in clazz.fields:
+            for annotation in field.annotations:
+                if annotation.name == "Id":
+                    metadata.id_name = field.declarators[0].name
+                    metadata.id_type = field.type.name
+                    return metadata
+        raise ValueError(
+            f"Aucune clé primaire (@Id) trouvée dans {metadata.class_name}."
+        )
