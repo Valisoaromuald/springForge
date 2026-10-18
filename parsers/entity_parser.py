@@ -61,6 +61,9 @@ class EntityParser:
             for imp in tree.imports
         ]
         
+        self._extract_primary_key(clazz, metadata)
+        return metadata
+    def _extract_primary_key(self, clazz, metadata):
         # -----------------------------
         # Recherche de la clé primaire
         # -----------------------------
@@ -69,7 +72,7 @@ class EntityParser:
                 if annotation.name == "Id":
                     metadata.id_name = field.declarators[0].name
                     metadata.id_type = field.type.name
-                    return metadata
-        raise ValueError(
+                    return
+            raise ValueError(
             f"Aucune clé primaire (@Id) trouvée dans {metadata.class_name}."
-        )
+            )
