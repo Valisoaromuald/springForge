@@ -3,7 +3,7 @@ package tests.resources;
 // import jakarta.persistence.Id;
 // import java.time.LocalDate;
 
-@Entity
+// @Entity
 @Table(name="customer")
 public class Client {
     @Id

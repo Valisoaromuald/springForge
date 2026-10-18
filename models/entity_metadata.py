@@ -9,3 +9,4 @@ class EntityMetadata:
     id_name: str = ""
     id_type: str = ""
     table_name: str = ""
+    is_entity: bool = False

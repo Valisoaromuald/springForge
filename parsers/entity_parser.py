@@ -61,8 +61,9 @@ class EntityParser:
             for imp in tree.imports
         ]
         
-        self._extract_primary_key(clazz, metadata)
+        self._extract_entity_annotation(clazz,metadata)
         self._extract_table_name(clazz,metadata)
+        self._extract_primary_key(clazz, metadata)
         return metadata
     
     
@@ -89,4 +90,27 @@ class EntityParser:
                 for element in annotation.element:
                     if element.name == "name":
                         metadata.table_name = element.value.value
+    
+    def _extract_entity_annotation(self, clazz, metadata: EntityMetadata) -> None:
+        """
+        Vérifie que la classe possède l'annotation @Entity.
+
+        Parameters
+        ----------
+        clazz
+            Classe Java analysée.
+
+        metadata : EntityMetadata
+            Métadonnées de l'entité.
+        """
+
+        for annotation in clazz.annotations:
+
+            if annotation.name == "Entity":
+                metadata.is_entity = True
+                return
+
+        raise ValueError(
+            f"La classe '{clazz.name}' n'est pas annotée avec @Entity."
+        )
                 
