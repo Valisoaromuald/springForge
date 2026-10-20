@@ -4,6 +4,7 @@ from models.repository_context import RepositoryContext
 from utils.file_writer import FileWriter
 from config.repository_config import repositories
 from core.package_resolver import PackageResolver
+from pathlib import Path
 class RepositoryGenerator:
 
     def __init__(
@@ -20,7 +21,7 @@ class RepositoryGenerator:
     def generate(
         self,
         entity_metadata: EntityMetadata,
-        template_path
+        template_path:Path
     ) -> str:
         context = RepositoryContext(
             package=self.package_resolver.resolve(
@@ -43,23 +44,62 @@ class RepositoryGenerator:
             template_path,
             context.to_dict()
         )
+        
+    def _validate(self, metadata: EntityMetadata) -> None:
+
+        if not metadata.class_name:
+            raise ValueError("Entity class name is missing.")
+
+        if not metadata.package:
+            raise ValueError("Entity package is missing.")
+
+        if not metadata.id_type:
+            raise ValueError("Entity id type is missing.")
 
 
 
     def _repository_import(self) -> str:
+        if self.repository_type not in repositories:
+            raise ValueError(
+                f"Unsupported repository type: {self.repository_type}"
+            )
         return repositories[self.repository_type]
     
-    def generate_file(self,entity_metadata,
-    template_path,
-    output_path,
-    writer:FileWriter
-    ):
+    def generate_file(
+    self,
+    project_path: Path,
+    entity_metadata: EntityMetadata,
+    template_path: Path,
+    writer: FileWriter
+    ) -> None:
+
         content = self.generate(
             entity_metadata,
             template_path
         )
-
+        output_path = self._build_output_path(
+            project_path,
+            entity_metadata
+        )
         writer.write(
             output_path,
             content
         )
+
+    def _build_output_path(
+    self,
+    source_root: Path,
+    entity_metadata: EntityMetadata
+    ) -> Path:
+
+        repository_package = self.package_resolver.resolve(
+            entity_metadata.package,
+            "repository"
+        )
+
+        return (
+            source_root
+            / Path(*repository_package.split("."))
+            / f"{entity_metadata.class_name}Repository.java"
+        )
+        

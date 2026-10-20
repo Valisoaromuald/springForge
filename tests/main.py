@@ -7,14 +7,14 @@ from core.package_resolver import PackageResolver
 from parsers.entity_parser import EntityParser
 def main():
     generator = RepositoryGenerator(TemplateEngine(),PackageResolver())
-    entity_parser = EntityParser(Path("tests/resources"))
+    project_path = Path(r"C:\Users\WINDOWS 10\Documents\Projets\springForge")
+    entity_parser = EntityParser(project_path)
     entity_path = entity_parser.find_entity("Client")
     metadata = entity_parser.parse_entity(entity_path)
-    print(f"{metadata}")
     generator.generate_file(
+        project_path,
         metadata,
         Path("templates/repository/repository.java.tpl"),
-        Path("tests/resources/repository/ClientRepository.java"),
         FileWriter()
     )
 
