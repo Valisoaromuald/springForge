@@ -1,23 +1,26 @@
 from pathlib import Path
 
+from generators.repository_generator import RepositoryGenerator
 from core.template_engine import TemplateEngine
-from models.repository_context import RepositoryContext
+from models.entity_metadata import EntityMetadata
 
-engine = TemplateEngine()
 
-repositoryContext = RepositoryContext(
-    "com.demo.repository",
-    "com.demo.model",
-    "Client",
-    "Long",
-    "JpaRepository",
-    "org.springframework.data.jpa.repository.JpaRepository"
+metadata = EntityMetadata(
+    package="com.example.demo.model",
+    class_name="Client",
+    id_type="Long"
 )
 
 
-code = engine.render_file(
-    Path("templates/repository/repository.java.tpl"),
-    repositoryContext.to_dict()
+generator = RepositoryGenerator(
+    TemplateEngine(),"ListCrudRepository"
 )
 
-print(code)
+
+result = generator.generate(
+    metadata,
+    Path("templates/repository/repository.java.tpl")
+)
+
+
+print(result)
