@@ -1,13 +1,23 @@
-
 from pathlib import Path
 
-from parsers.entity_parser import EntityParser
+from core.template_engine import TemplateEngine
+from models.repository_context import RepositoryContext
 
-# Le parser cherchera l'entité dans le dossier tests/resources
-parser = EntityParser(Path("tests/resources"))
+engine = TemplateEngine()
 
-entity_path = parser.find_entity("Client")
+repositoryContext = RepositoryContext(
+    "com.demo.repository",
+    "com.demo.model",
+    "Client",
+    "Long",
+    "JpaRepository",
+    "org.springframework.data.jpa.repository.JpaRepository"
+)
 
-metadata = parser.parse_entity(entity_path)
 
-print(metadata)
+code = engine.render_file(
+    Path("templates/repository/repository.java.tpl"),
+    repositoryContext.to_dict()
+)
+
+print(code)
