@@ -28,7 +28,6 @@ class EntityParser:
             self.project_path,
             filename
         )
-
         if entity is None:
             raise FileNotFoundError(
                 f"L'entité '{entity_name}' est introuvable."
@@ -38,34 +37,38 @@ class EntityParser:
 
     def parse_entity(self, entity_path: Path) -> EntityMetadata:
         metadata = EntityMetadata()
-        with open(entity_path, "r", encoding="utf-8") as file:
-            source = file.read()
-        try:
-            tree = javalang.parse.parse(source)
-        except javalang.parser.JavaSyntaxError as e:
-            raise ValueError(
-                f"Syntaxe Java invalide : {e}"
-            )
-        metadata.package = (
-        tree.package.name
-        if tree.package
-        else "")
-        if not tree.types:
-            raise ValueError(
-                "Aucune classe trouvée."
-            )
+        tree = self._load_and_parse_java(entity_path)
+        self._extract_entity_package(metadata,tree)
+        self._check_class_existence(tree)
         clazz = tree.types[0]
-        metadata.class_name = tree.types[0].name
-        metadata.imports = [
-            imp.path
-            for imp in tree.imports
-        ]
-        
+        self._extract_class_info(clazz,metadata,tree)
         self._extract_entity_annotation(clazz,metadata)
         self._extract_table_name(clazz,metadata)
         self._extract_primary_key(clazz, metadata)
         return metadata
     
+    def _load_and_parse_java(self, entity_path: Path):
+        """Lit et parse un fichier source Java en gérant les erreurs de syntaxe."""
+        with open(entity_path, "r", encoding="utf-8") as file:
+            source = file.read()
+        try:
+            return javalang.parse.parse(source)
+        except javalang.parser.JavaSyntaxError as e:
+            raise ValueError(f"Syntaxe Java invalide : {e}")
+
+    def _extract_class_info(self, clazz, tree, metadata: EntityMetadata):
+        """Extrait le nom de la classe et les imports de manière groupée."""
+        metadata.class_name = clazz.name
+        metadata.imports = [imp.path for imp in tree.imports]
+    
+    def _extract_entity_package(self,metadata,tree)-> None:
+        metadata.package = tree.package.name if tree.package else ""
+        
+    def _check_class_existence(self,tree):
+        if not tree.types:
+            raise ValueError(
+                "Aucune classe trouvée."
+            )
     
     def _extract_primary_key(self, clazz, metadata):
         # -----------------------------
