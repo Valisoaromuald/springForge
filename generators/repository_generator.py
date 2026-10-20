@@ -1,7 +1,8 @@
 from models.entity_metadata import EntityMetadata
 from core.template_engine import TemplateEngine
 from models.repository_context import RepositoryContext
-
+from utils.file_writer import FileWriter
+from config.repository_config import repositories
 
 class RepositoryGenerator:
 
@@ -54,19 +55,19 @@ class RepositoryGenerator:
 
 
     def _repository_import(self) -> str:
-
-        repositories = {
-            "JpaRepository":
-                "org.springframework.data.jpa.repository.JpaRepository",
-
-            "CrudRepository":
-                "org.springframework.data.repository.CrudRepository",
-
-            "PagingAndSortingRepository":
-                "org.springframework.data.repository.PagingAndSortingRepository",
-
-            "ListCrudRepository":
-                "org.springframework.data.repository.ListCrudRepository"
-        }
-
         return repositories[self.repository_type]
+    
+    def generate_file(self,entity_metadata,
+    template_path,
+    output_path,
+    writer:FileWriter
+    ):
+        content = self.generate(
+            entity_metadata,
+            template_path
+        )
+
+        writer.write(
+            output_path,
+            content
+        )
