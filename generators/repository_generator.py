@@ -3,16 +3,18 @@ from core.template_engine import TemplateEngine
 from models.repository_context import RepositoryContext
 from utils.file_writer import FileWriter
 from config.repository_config import repositories
-
+from core.package_resolver import PackageResolver
 class RepositoryGenerator:
 
     def __init__(
         self,
         template_engine: TemplateEngine,
+        package_resolver: PackageResolver,
         repository_type: str = "JpaRepository"
     ):
         self.template_engine = template_engine
         self.repository_type = repository_type
+        self.package_resolver = package_resolver
 
 
     def generate(
@@ -20,11 +22,11 @@ class RepositoryGenerator:
         entity_metadata: EntityMetadata,
         template_path
     ) -> str:
-
         context = RepositoryContext(
-            package=self._repository_package(
-                entity_metadata.package
-            ),
+            package=self.package_resolver.resolve(
+            entity_metadata.package,
+            "repository"
+        ),
 
             entity_package=entity_metadata.package,
 
@@ -42,16 +44,6 @@ class RepositoryGenerator:
             context.to_dict()
         )
 
-
-    def _repository_package(
-        self,
-        entity_package: str
-    ) -> str:
-
-        return entity_package.replace(
-            ".model",
-            ".repository"
-        )
 
 
     def _repository_import(self) -> str:
