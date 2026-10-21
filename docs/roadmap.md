@@ -4,8 +4,8 @@
 
 ### Génération de base
 
-- [ ] Analyse des entités Java
-- [ ] Génération Repository
+- [x] Analyse des entités Java
+- [x] Génération Repository
 - [ ] Génération Service
 - [ ] Génération ServiceImpl
 - [ ] Génération Controller

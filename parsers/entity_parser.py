@@ -41,7 +41,8 @@ class EntityParser:
         self._extract_entity_package(metadata,tree)
         self._check_class_existence(tree)
         clazz = tree.types[0]
-        self._extract_class_info(clazz,metadata,tree)
+        self._extract_class_info(clazz,tree,metadata)
+        
         self._extract_entity_annotation(clazz,metadata)
         self._extract_table_name(clazz,metadata)
         self._extract_primary_key(clazz, metadata)
@@ -60,6 +61,8 @@ class EntityParser:
         """Extrait le nom de la classe et les imports de manière groupée."""
         metadata.class_name = clazz.name
         metadata.imports = [imp.path for imp in tree.imports]
+        return metadata
+        
     
     def _extract_entity_package(self,metadata,tree)-> None:
         metadata.package = tree.package.name if tree.package else ""
