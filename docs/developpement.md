@@ -15,3 +15,13 @@
 - [x] Détection du nom de la table grace à l'annotation @Table
 - [x] Detection d'une classe qui possède l'annotation @Entity
 
+## Livrable 3 - Générateur de Repository
+
+- [x] Ajout du moteur de templates
+- [x] Création du `RepositoryContext`
+- [x] Création du `RepositoryGenerator`
+- [x] Génération du contenu d'un repository Java
+- [x] Gestion des types de repository (`JpaRepository`,`CrudRepository`,PagingAndSortingRepository et ListCrudRepository)
+- [x] Résolution automatique des packages
+- [x] Génération et écriture du fichier Repository
+- [x] Validation des métadonnées avant génération
